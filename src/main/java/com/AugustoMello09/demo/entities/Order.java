@@ -1,6 +1,8 @@
 package com.AugustoMello09.demo.entities;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.AugustoMello09.demo.entities.enums.OrderStatus;
@@ -11,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,6 +29,9 @@ public class Order {
 	@ManyToOne
 	@JoinColumn(name="client_id")
 	private Client client;
+	
+	@OneToMany(mappedBy = "order")
+	private List<OrderItem> items = new ArrayList<>();
 	
 	public Order() {
 		
@@ -86,6 +92,18 @@ public class Order {
 			return false;
 		Order other = (Order) obj;
 		return Objects.equals(id, other.id);
+	}
+
+	public List<OrderItem> getItems() {
+		return items;
+	}
+	
+	public double getTotal(){
+		double soma = 0.0;
+		for (OrderItem item : items) {
+			soma = soma + item.getSubTotal();
+		}
+		return soma;
 	}
 	
 }
